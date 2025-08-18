@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount the source code, but not node_modules
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      # This helps with hot-reloading in some Docker environments
+      - WATCHPACK_POLLING=true
+
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      # Mount the source code, but not node_modules
+      - ./backend/api-gateway:/app
+      - /app/node_modules
+
+  ai-service:
+    build:
+      context: ./backend/ai-service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/ai-service:/app
